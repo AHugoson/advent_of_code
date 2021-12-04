@@ -4,6 +4,27 @@ import sys
 GREEN = '\033[92m'
 END_COLOR = '\033[0m'
 
+def find_reading(entries, i, most_common=True):
+    filtered_entries = []
+    bit_counter = 0
+
+    for entry in entries:
+        if entry[i] == "1":
+            bit_counter += 1
+
+    most_common_bit = "1" if bit_counter >= len(entries)/2 else "0"
+
+    for entry in entries:
+        if most_common and entry[i] == most_common_bit:
+            filtered_entries.append(entry)
+        elif not most_common and entry[i] != most_common_bit:
+            filtered_entries.append(entry)
+
+    if len(filtered_entries) > 1:
+        return find_reading(filtered_entries, i+1, most_common)
+    else:
+        return int(filtered_entries[0], base=2)
+
 start_time = time.perf_counter()
 
 with open(sys.argv[1], "r") as file:
@@ -12,22 +33,12 @@ with open(sys.argv[1], "r") as file:
 
 print(f'Analyzing {len(entries)} entries')
 
-bit_counter = [0 for i in range(0, len(entries[0]))]
-entry_length = len(bit_counter)
+oxygen_rating = find_reading(entries, 0)
+co2_rating = find_reading(entries, 0, False)
 
-for entry in entries:
-    for bit in range(0, len(bit_counter)):
-        if entry[bit] == "1":
-            bit_counter[bit] += 1
-
-most_common_bit = [(num_bits>len(entries)/2) for num_bits in bit_counter]
-gamma_rate = 0
-epsilon_rate = 0
-for i in range(0, entry_length):
-    gamma_rate += 2**(entry_length-i-1) if most_common_bit[i] else 0
-    epsilon_rate += 2**(entry_length-i-1) if not most_common_bit[i] else 0
-
-print(f'Answer (gamma_rate[{gamma_rate}] * epsilon_rate[{epsilon_rate}]): {GREEN}: {gamma_rate * epsilon_rate}{END_COLOR}')
+print(f'Oxygen generator rating: {oxygen_rating}')
+print(f'CO2 scrubber rating: {co2_rating}')
+print(f'Answer (Oxygen [{oxygen_rating}] * CO2 [{co2_rating}]): {GREEN}{oxygen_rating * co2_rating}{END_COLOR}')
 
 print(f'Completed in {time.perf_counter()-start_time} s')
 
