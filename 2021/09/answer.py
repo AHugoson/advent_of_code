@@ -23,18 +23,18 @@ def get_basin(x, y, entries, basin_size=0, already_counted=[]):
     global basins
     basins.append(1)
     tmp_basin = 0
-    if x > 0 and n == entries[y][x-1] - 1 < 8 and [x-1, y] not in already_counted:
+    if x > 0 and entries[y][x-1] < 9 and [x-1, y] not in already_counted:
         already_counted.append([x-1, y])
-        tmp_basin += get_basin(x-1, y, entries, basin_size+1)
-    if x < len(entries[y])-1 and n == entries[y][x+1] - 1 < 8 and [x+1, y] not in already_counted:
+        tmp_basin += get_basin(x-1, y, entries, basin_size+1, already_counted)
+    if x < len(entries[y])-1 and entries[y][x+1] < 9 and [x+1, y] not in already_counted:
         already_counted.append([x+1, y])
-        tmp_basin += get_basin(x+1, y, entries, basin_size+1)
-    if y > 0 and n == entries[y-1][x] - 1 < 8 and [x, y-1] not in already_counted:
+        tmp_basin += get_basin(x+1, y, entries, basin_size+1, already_counted)
+    if y > 0 and entries[y-1][x] < 9 and [x, y-1] not in already_counted:
         already_counted.append([x, y-1])
-        tmp_basin += get_basin(x, y-1, entries, basin_size+1)
-    if y < len(entries)-1 and n == entries[y+1][x] - 1 < 8 and [x, y+1] not in already_counted:
+        tmp_basin += get_basin(x, y-1, entries, basin_size+1, already_counted)
+    if y < len(entries)-1 and entries[y+1][x] < 9 and [x, y+1] not in already_counted:
         already_counted.append([x, y+1])
-        tmp_basin += get_basin(x, y+1, entries, basin_size+1)
+        tmp_basin += get_basin(x, y+1, entries, basin_size+1, already_counted)
     return len(already_counted)
 risk_points = []
 for y in range(len(entries)):
@@ -48,14 +48,14 @@ basin_sizes = []
 for x, y in risk_points:
     risk_level += entries[y][x] + 1
     get_basin(x, y, entries, 0, [])
-    basin_sizes.append(len(basins))
+    basin_sizes.append(len(basins)-1)
     basins = []
 
 print(sorted(basin_sizes))
 
 basin_3_product = 1
-
-for t in sorted(basin_sizes[-3:]):
+for t in sorted(basin_sizes)[-3:]:
+    print(t)
     basin_3_product = basin_3_product * t
 
 print('Answer 1:', risk_level)
