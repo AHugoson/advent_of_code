@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-/* converts number-words to numerals */
+/* converts words to digits */
 char num_from_str(char buf[])
 {
     if (strncmp(buf, "zero", 4) == 0) {
@@ -38,6 +38,7 @@ int main()
     while (fgets(buf, sizeof(buf), stdin) != NULL) {
         char num_string_p1[3] = "";
         char num_string_p2[3] = "";
+        printf("-----=-----\n%s", buf);
 
         // loop through chars on current line
         for (int i=0; i<sizeof(buf); i++) {
@@ -73,6 +74,6 @@ int main()
         sum_p1 += atoi(num_string_p1);
         sum_p2 += atoi(num_string_p2);
     }
-    printf("Sum of calibration values: {P1: %ld} {P2: %ld}\n", sum_p1, sum_p2);
+    printf("\nSum of calibration values: {P1: %ld} {P2: %ld}\n", sum_p1, sum_p2);
     return 0;
 }
